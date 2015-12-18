@@ -18,7 +18,7 @@ def echo(word, word_eol, userdata):
         res = p1.communicate()[0]
         nick = word[0].split("!")[0].replace(":","")
         if len(res) > 0:
-            print('\035', nick,"said:",res.replace("\n",""))
+            print('\037\00304 '+ nick+" said: "+res.replace("\n",""))
         return hexchat.EAT_NONE
     except:
         return hexchat.EAT_NONE

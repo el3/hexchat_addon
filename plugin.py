@@ -15,7 +15,8 @@ print os.getcwd()
 def echo(word, word_eol, userdata):
     try:
         p1 = Popen([YOUR_PYTHON, "translate.py", word_eol[3][1:]], stdout=PIPE,stderr=PIPE)
-        res = p1.communicate()[0]
+        res,err = p1.communicate()
+        #print err
         nick = word[0].split("!")[0].replace(":","")
         if len(res) > 0:
             print('\037\00304 '+ nick+" said: "+res.replace("\n",""))
@@ -24,3 +25,4 @@ def echo(word, word_eol, userdata):
         return hexchat.EAT_NONE
 
 hexchat.hook_server("PRIVMSG", echo)
+

@@ -6,18 +6,15 @@ __author__ = "el3"
 YOUR_PYTHON = "/home/user/anaconda2/bin/python2.7" #example if you got anaconda
 
 import hexchat
-import sys,os
-print sys.version
-from subprocess import Popen,PIPE
-
-print os.getcwd()
+from textblob import TextBlob
 
 def echo(word, word_eol, userdata):
     try:
-        p1 = Popen([YOUR_PYTHON, "translate.py", word_eol[3][1:]], stdout=PIPE,stderr=PIPE)
-        res,err = p1.communicate()
-        #print err
+        original = TextBlob(word_eol[3][1:])
+        lang = original.detect_language()
         nick = word[0].split("!")[0].replace(":","")
+        if lang != "en":
+            res = original.translate(from_lang=lang,to='en'),"(From lang=%s)" % lang
         if len(res) > 0:
             print('\037\00304 '+ nick+" said: "+res.replace("\n",""))
         return hexchat.EAT_NONE
@@ -25,4 +22,3 @@ def echo(word, word_eol, userdata):
         return hexchat.EAT_NONE
 
 hexchat.hook_server("PRIVMSG", echo)
-

@@ -5,8 +5,9 @@ __author__ = "el3"
 
 import hexchat
 from textblob import TextBlob
+import threading
 
-print "Hexchat Translator loaded"
+threads = []
 
 def echo(word, word_eol, userdata):
     try:
@@ -16,9 +17,16 @@ def echo(word, word_eol, userdata):
         if lang != "en":
             res = original.translate(from_lang=lang,to='en')
         if len(res) > 0:
-            print('\037\00304 ' + nick + " said: " + str(res).replace("\n","") + " (From lang=%s)" % str(lang))
+            print('\037\00304' + nick + " said: " + str(res).replace("\n","") + " (From lang=%s)" % str(lang))
         return hexchat.EAT_NONE
     except:
         return hexchat.EAT_NONE
 
-hexchat.hook_server("PRIVMSG", echo)
+def echothread(word, word_eol, userdata):
+    threads.append(threading.Thread())
+    threads[-1].run = lambda: echo(word, word_eol, userdata)
+    threads[-1].start()
+
+print "Hexchat Translator loaded"
+
+hexchat.hook_server("PRIVMSG", echothread)
